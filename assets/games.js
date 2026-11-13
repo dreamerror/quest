@@ -3,12 +3,15 @@
 function mountCatcher(container, { avatar, complete, isPaused }) {
   container.innerHTML = `
     <p class="instructions">Собери 12 приятностей. За каждую пойманную заботу теряется жизнь.</p>
-    <div class="legend"><span>Лови 💐 ☕ 🎫 💗</span><span>Пропускай ⏰ 🏥 🧹</span></div>
-    <div class="hud"><span data-score></span><span data-lives></span></div>
-    <div class="field" tabindex="0" aria-label="Игровое поле. Для движения используй стрелки влево и вправо.">
-      <div class="catcher" aria-hidden="true"><div data-player></div><div class="basket"></div></div>
-    </div>
-    <div class="game-controls"><button type="button" data-start>Начать</button><p role="status">Двигайся стрелками, мышью или пальцем.</p></div>`;
+    <div class="catcher-screen">
+      <div class="legend"><span>Лови 💐 ☕ 🎫 💗</span><span>Пропускай ⏰ 🏥 🧹</span></div>
+      <div class="hud"><span data-score></span><span data-lives></span></div>
+      <div class="field" tabindex="0" aria-label="Игровое поле. Для движения используй стрелки влево и вправо.">
+        <div class="catcher" aria-hidden="true"><div data-player></div><div class="basket"></div></div>
+      </div>
+      <div class="game-controls"><button type="button" data-start>Начать</button><p role="status">Двигайся стрелками, мышью или пальцем.</p></div>
+    </div>`;
+  const screen = container.querySelector(".catcher-screen");
   const field = container.querySelector(".field");
   const player = container.querySelector("[data-player]");
   const catcher = container.querySelector(".catcher");
@@ -27,6 +30,10 @@ function mountCatcher(container, { avatar, complete, isPaused }) {
   let lastTime = null;
   let untilSpawn = 0;
   let spawnCount = 0;
+
+  function scrollIntoView() {
+    screen.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }
 
   function updateHud() {
     scoreLabel.textContent = `Приятности ${score} / 12`;
@@ -66,7 +73,10 @@ function mountCatcher(container, { avatar, complete, isPaused }) {
     start.textContent = "Сыграть снова";
     status.textContent = won ? "Корзинка полна приятностей!" : "Жизни закончились. Можно попробовать ещё раз.";
     if (won) complete();
-    else start.focus();
+    else {
+      start.focus({ preventScroll: true });
+      scrollIntoView();
+    }
   }
 
   function tick(time) {
@@ -115,7 +125,8 @@ function mountCatcher(container, { avatar, complete, isPaused }) {
     updateHud();
     start.disabled = true;
     status.textContent = "Двигайся стрелками, мышью или пальцем.";
-    field.focus();
+    field.focus({ preventScroll: true });
+    scrollIntoView();
     frame = requestAnimationFrame(tick);
   });
 
@@ -144,6 +155,7 @@ function mountCatcher(container, { avatar, complete, isPaused }) {
   moveTo(0.5, field.clientWidth);
   updateHud();
   return {
+    scrollIntoView,
     refreshAvatar: () => player.replaceChildren(avatar()),
     dispose: () => cancelAnimationFrame(frame)
   };

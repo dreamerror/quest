@@ -122,6 +122,7 @@ avatarForm.addEventListener("submit", event => {
   avatarDialog.close();
 });
 $("avatar-cancel").addEventListener("click", () => avatarDialog.close());
+avatarDialog.addEventListener("close", () => activeGame?.scrollIntoView?.());
 
 function allCompleted() {
   return tracks.every(track => state.completed.has(track.id));
@@ -186,6 +187,7 @@ function openTrack(track) {
     }
   });
   if (!state.avatarSeen) openAvatar();
+  else activeGame?.scrollIntoView?.();
 }
 
 $("play").addEventListener("click", advance);

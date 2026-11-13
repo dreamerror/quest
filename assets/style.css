@@ -121,9 +121,11 @@ h1 { font: 900 clamp(2rem, 5.4vw, 4rem)/1 var(--display); letter-spacing: -.055e
 .hud, .game-controls, .legend { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
 .hud { justify-content: space-between; margin-bottom: 8px; font: bold .9rem var(--mono); }
 .legend { font-size: .9rem; margin-bottom: 12px; color: var(--muted); }
+.catcher-screen { scroll-margin-block: 8px; }
 .field {
   position: relative;
   height: clamp(245px, 49vh, 400px);
+  max-height: max(105px, calc(100dvh - 155px));
   overflow: hidden;
   touch-action: none;
   border: 2px solid #6a4e39;
