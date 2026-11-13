@@ -83,7 +83,7 @@ function mountCatcher(container, { avatar, complete, isPaused }) {
     untilSpawn -= dt;
     if (untilSpawn <= 0) {
       spawn(width);
-      untilSpawn = 0.74;
+      untilSpawn = 0.84;
     }
     for (let index = drops.length - 1; index >= 0; index--) {
       const drop = drops[index];
@@ -150,14 +150,17 @@ function mountCatcher(container, { avatar, complete, isPaused }) {
 }
 
 function mountPacking(container, { complete }) {
-  const columns = 5;
-  const rows = 4;
+  const columns = 7;
+  const rows = 5;
   const pieces = [
-    { name: "Коробка конфет", icon: "🍫", color: "#d59a85", shape: [[0, 0], [1, 0], [0, 1], [1, 1]] },
-    { name: "Букет", icon: "💐", color: "#b2bc91", shape: [[0, 0], [1, 0], [2, 0], [1, 1], [2, 1]] },
-    { name: "Кружка", icon: "☕", color: "#e6b178", shape: [[0, 0], [0, 1], [1, 1], [2, 1]] },
-    { name: "Фоторамка", icon: "🖼️", color: "#baa2ba", shape: [[0, 0], [1, 0], [0, 1], [1, 1]] },
-    { name: "Книга", icon: "📕", color: "#a7bbc6", shape: [[0, 0], [0, 1], [0, 2]] }
+    { name: "Коробка конфет", icon: "🍫", color: "#d59a85", shape: [[0, 0], [1, 0], [0, 1], [1, 1]], solution: [0, 0, 0] },
+    { name: "Букет", icon: "💐", color: "#b2bc91", shape: [[0, 0], [1, 0], [2, 0], [1, 1], [2, 1]], solution: [2, 0, 0] },
+    { name: "Кружка", icon: "☕", color: "#e6b178", shape: [[0, 0], [0, 1], [1, 1], [2, 1]], solution: [2, 1, 0] },
+    { name: "Фоторамка", icon: "🖼️", color: "#baa2ba", shape: [[0, 0], [1, 0], [0, 1], [1, 1]], solution: [5, 0, 0] },
+    { name: "Книга", icon: "📕", color: "#a7bbc6", shape: [[0, 0], [0, 1], [0, 2]], solution: [6, 2, 0] },
+    { name: "Мягкая игрушка", icon: "🧸", color: "#d7ad8a", shape: [[0, 0], [1, 0], [2, 0], [1, 1], [1, 2]], solution: [3, 2, 1] },
+    { name: "Чай", icon: "🍵", color: "#a7c3a9", shape: [[0, 0], [1, 0], [1, 1], [2, 1]], solution: [0, 2, 0] },
+    { name: "Шарф", icon: "🧣", color: "#d7a4aa", shape: [[0, 0], [0, 1], [0, 2], [0, 3]], solution: [0, 4, 1] }
   ];
   container.innerHTML = `
     <p class="instructions">Выбери предмет и клетку для его верхнего левого угла. Предметы можно поворачивать и перекладывать.</p>
@@ -165,20 +168,28 @@ function mountPacking(container, { complete }) {
       <div class="packing-grid" role="group" aria-label="Коробка"></div>
       <div class="pieces" role="group" aria-label="Подарки"></div>
     </div>
-    <div class="game-controls"><button class="outline" type="button" data-rotate>↻ Повернуть</button><button class="outline" type="button" data-reset>Заново</button><button type="button" data-close disabled>Закрыть крышку</button></div>
+    <div class="game-controls"><button class="outline" type="button" data-rotate>↻ Повернуть</button><button class="outline" type="button" data-hint>Подсказка</button><button class="outline" type="button" data-reset>Заново</button><button type="button" data-close disabled>Закрыть крышку</button></div>
     <p class="pack-status" role="status"></p>`;
   const grid = container.querySelector(".packing-grid");
   const tray = container.querySelector(".pieces");
   const rotate = container.querySelector("[data-rotate]");
+  const hint = container.querySelector("[data-hint]");
   const reset = container.querySelector("[data-reset]");
   const close = container.querySelector("[data-close]");
   const status = container.querySelector("[role=status]");
   const cellButtons = [];
   const pieceButtons = [];
   let selected = 0;
+  let hinted = null;
   let placements = new Map();
   let shapes = pieces.map(piece => piece.shape);
   let closed = false;
+  grid.style.setProperty("--columns", columns);
+
+  function rotateShape(shape) {
+    const height = Math.max(...shape.map(([, y]) => y));
+    return shape.map(([x, y]) => [height - y, x]);
+  }
 
   function positions(shape, anchor) {
     const column = anchor % columns;
@@ -205,6 +216,7 @@ function mountPacking(container, { complete }) {
       const piece = pieces[pieceIndex];
       button.textContent = firstCells.get(pieceIndex) === index ? piece.icon : "";
       button.dataset.filled = String(Boolean(piece));
+      button.dataset.hinted = String(pieceIndex === hinted);
       button.style.setProperty("--piece-color", piece?.color ?? "");
       button.setAttribute("aria-label", `Ряд ${Math.floor(index / columns) + 1}, клетка ${index % columns + 1}${piece ? `, ${piece.name}` : ""}`);
       button.disabled = closed;
@@ -228,12 +240,14 @@ function mountPacking(container, { complete }) {
       }));
     }
     rotate.disabled = selected === null || closed;
+    hint.disabled = placements.size === pieces.length || closed;
     reset.disabled = closed;
     close.disabled = placements.size !== pieces.length || closed;
   }
 
   function select(index) {
     selected = index;
+    hinted = null;
     placements.delete(index);
     status.textContent = `Выбран предмет «${pieces[index].name}».`;
     render();
@@ -253,6 +267,7 @@ function mountPacking(container, { complete }) {
     }
     placements.set(selected, anchor);
     selected = null;
+    hinted = null;
     status.textContent = placements.size === pieces.length ? "Всё поместилось. Закрой крышку!" : `Уложено ${placements.size} из ${pieces.length}.`;
     render();
   }
@@ -274,15 +289,37 @@ function mountPacking(container, { complete }) {
     tray.append(button);
   }
   rotate.addEventListener("click", () => {
-    const height = Math.max(...shapes[selected].map(([, y]) => y));
-    shapes[selected] = shapes[selected].map(([x, y]) => [height - y, x]);
+    shapes[selected] = rotateShape(shapes[selected]);
     status.textContent = `Предмет «${pieces[selected].name}» повёрнут.`;
     render();
+  });
+  hint.addEventListener("click", () => {
+    const index = selected ?? pieces.findIndex((_, pieceIndex) => !placements.has(pieceIndex));
+    const piece = pieces[index];
+    const [column, row, turns] = piece.solution;
+    const anchor = row * columns + column;
+    let shape = piece.shape;
+    for (let turn = 0; turn < turns; turn++) shape = rotateShape(shape);
+
+    const cells = occupied();
+    const blockers = new Set(positions(shape, anchor).map(([x, y]) => cells.get(y * columns + x)));
+    blockers.delete(undefined);
+    for (const blocker of blockers) placements.delete(blocker);
+    shapes[index] = shape;
+    placements.set(index, anchor);
+    selected = null;
+    hinted = index;
+    const details = blockers.size ? " Мешавшие предметы вернулись в список." : "";
+    const finished = placements.size === pieces.length ? " Можно закрыть крышку!" : "";
+    status.textContent = `Подсказка уложила предмет «${piece.name}».${details}${finished}`;
+    render();
+    if (hint.disabled) close.focus();
   });
   reset.addEventListener("click", () => {
     placements = new Map();
     shapes = pieces.map(piece => piece.shape);
     selected = 0;
+    hinted = null;
     status.textContent = "Коробка снова пуста.";
     render();
   });

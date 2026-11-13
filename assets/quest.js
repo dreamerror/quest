@@ -8,19 +8,26 @@ const $ = id => document.getElementById(id);
 const storageKey = "cassette-for-mom-v1";
 const avatarDialog = $("avatar-dialog");
 const avatarForm = $("avatar-form");
-const avatarFields = [...avatarForm.querySelectorAll("select")];
-const avatarDefaults = Object.fromEntries(avatarFields.map(field => [field.name, field.options[0].value]));
+const avatarOptions = {
+  hair: { label: "Причёска", values: [["bob", "Каре"], ["waves", "Волны"], ["bun", "Пучок"]] },
+  hairColor: { label: "Цвет волос", values: [["#4b2d25", "Каштановый"], ["#a34d2b", "Рыжий"], ["#c99551", "Русый"], ["#817777", "Серебристый"], ["#2b2528", "Тёмный"]] },
+  shirt: { label: "Одежда", values: [["#ae5140", "Терракотовая"], ["#56755c", "Зелёная"], ["#735676", "Сиреневая"], ["#476c83", "Синяя"]] },
+  glasses: { label: "Очки", values: [[false, "Без очков"], [true, "В очках"]] }
+};
 const saved = load();
 const state = {
-  avatar: { ...avatarDefaults, glasses: saved.avatar?.glasses === true },
+  avatar: {},
+  avatarSeen: saved.avatarSeen === true,
   completed: new Set(Array.isArray(saved.completed) ? saved.completed : []),
   prizeRevealed: saved.prizeRevealed === true
 };
-for (const field of avatarFields) {
-  const value = saved.avatar?.[field.name];
-  if ([...field.options].some(option => option.value === value)) state.avatar[field.name] = value;
+for (const [key, { values }] of Object.entries(avatarOptions)) {
+  const match = values.find(([value]) => value === saved.avatar?.[key]);
+  state.avatar[key] = (match ?? values[0])[0];
+  if (match && match !== values[0]) state.avatarSeen = true;
 }
 let activeGame;
+let draftAvatar;
 
 function load() {
   try {
@@ -38,7 +45,8 @@ function save() {
   }
 }
 
-function avatarArt({ hair, hairColor, skin, shirt, glasses }) {
+function avatarArt({ hair, hairColor, shirt, glasses }) {
+  const skin = "#f1bc91";
   const hairBack = {
     bob: '<path d="M12 43V26c0-13 8-20 20-20s20 7 20 20v17c-8 5-32 5-40 0Z"/>',
     waves: '<path d="M10 43q7-7 2-15C9 15 20 5 32 5s23 10 20 23q-5 8 2 15-5 8-12 1-10 7-20 0-7 7-12-1Z"/>',
@@ -63,24 +71,52 @@ function avatarArt({ hair, hairColor, skin, shirt, glasses }) {
   return template.content.firstElementChild;
 }
 
-function draftAvatar() {
-  return { ...Object.fromEntries(new FormData(avatarForm)), glasses: avatarForm.elements.glasses.checked };
-}
-
 function previewAvatar() {
-  $("avatar-preview").replaceChildren(avatarArt(draftAvatar()));
+  $("avatar-preview").replaceChildren(avatarArt(draftAvatar));
+  for (const [key, { values }] of Object.entries(avatarOptions)) {
+    $(`avatar-value-${key}`).textContent = values.find(([value]) => value === draftAvatar[key])[1];
+  }
 }
 
-$("avatar-open").addEventListener("click", () => {
-  for (const field of avatarFields) field.value = state.avatar[field.name];
-  avatarForm.elements.glasses.checked = state.avatar.glasses;
+for (const [key, { label, values }] of Object.entries(avatarOptions)) {
+  const row = document.createElement("div");
+  row.className = "avatar-option";
+  row.setAttribute("role", "group");
+  row.setAttribute("aria-label", label);
+  row.innerHTML = `
+    <button type="button" class="outline" aria-label="${label}: предыдущий вариант">‹</button>
+    <div><span>${label}</span><output id="avatar-value-${key}"></output></div>
+    <button type="button" class="outline" aria-label="${label}: следующий вариант">›</button>`;
+  const [previous, next] = row.querySelectorAll("button");
+  function step(direction) {
+    const index = values.findIndex(([value]) => value === draftAvatar[key]);
+    draftAvatar[key] = values[(index + direction + values.length) % values.length][0];
+    previewAvatar();
+  }
+  previous.addEventListener("click", () => step(-1));
+  next.addEventListener("click", () => step(1));
+  row.addEventListener("keydown", event => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    step(event.key === "ArrowLeft" ? -1 : 1);
+  });
+  $("avatar-options").append(row);
+}
+
+function openAvatar() {
+  draftAvatar = { ...state.avatar };
   previewAvatar();
   avatarDialog.showModal();
-});
-avatarForm.addEventListener("input", previewAvatar);
+  if (!state.avatarSeen) {
+    state.avatarSeen = true;
+    save();
+  }
+}
+
+$("avatar-open").addEventListener("click", openAvatar);
 avatarForm.addEventListener("submit", event => {
   event.preventDefault();
-  state.avatar = draftAvatar();
+  state.avatar = draftAvatar;
   save();
   activeGame?.refreshAvatar?.();
   avatarDialog.close();
@@ -149,6 +185,7 @@ function openTrack(track) {
       $("next").focus();
     }
   });
+  if (!state.avatarSeen) openAvatar();
 }
 
 $("play").addEventListener("click", advance);
