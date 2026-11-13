@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#29231e">
+  <title>Кассета для мамы</title>
+  <link rel="stylesheet" href="./assets/style.css">
+  <script defer src="./assets/games.js"></script>
+  <script defer src="./assets/quest.js"></script>
+</head>
+<body>
+  <header class="masthead">
+    <a href="#" id="home-link">♥ &nbsp; КАССЕТА ДЛЯ МАМЫ</a>
+    <button class="outline" type="button" id="avatar-open">Мой персонаж</button>
+  </header>
+  <main>
+    <section id="home" aria-labelledby="home-title">
+      <div class="cover">
+        <div class="cover-copy">
+          <p class="label">Подарочная запись</p>
+          <h1 id="home-title" tabindex="-1">Кассета<br>для мамы<span>.</span></h1>
+          <p class="cover-message">С днём рождения, мама! На этой кассете — игры, а в конце ждёт сюрприз.</p>
+          <button id="play" type="button">▶ &nbsp; Воспроизвести</button>
+        </div>
+        <div class="cassette" aria-hidden="true">
+          <div class="tape-label">
+            <div class="tape-title"><b>A</b><span>Для любимой мамы</span><small>СТЕРЕО</small></div>
+            <div class="stripes"></div>
+            <div class="reels"><i></i><b></b><i></i></div>
+            <div class="tape-notes"><span>ДОМАШНЯЯ ЗАПИСЬ</span><span>♥</span></div>
+          </div>
+          <div class="tape-foot"><i></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <section class="tracklist" aria-labelledby="tracklist-title">
+        <div class="tracklist-heading"><h2 id="tracklist-title">Сторона А</h2><span id="progress"></span></div>
+        <div id="tracks"></div>
+        <button class="track bonus" type="button" id="prize-open" disabled>
+          <span class="track-number">Б</span><span><strong>Сюрприз</strong><small id="prize-caption"></small></span><span class="track-action" id="prize-icon" aria-hidden="true"></span>
+        </button>
+      </section>
+    </section>
+    <section class="sleeve" id="game-screen" aria-labelledby="game-title" hidden>
+      <button type="button" class="outline back">← К кассете</button>
+      <p id="game-track" class="label"></p>
+      <h1 id="game-title" tabindex="-1"></h1>
+      <div id="game-content"></div>
+      <div class="game-result" id="game-result" hidden>
+        <p role="status">✓ Трек пройден!</p>
+        <button id="next" type="button"></button>
+      </div>
+    </section>
+    <section class="sleeve" id="prize-screen" aria-labelledby="prize-title" hidden>
+      <button type="button" class="outline back">← К кассете</button>
+      <p class="label">Сторона Б</p>
+      <h1 id="prize-title" tabindex="-1">Сюрприз для мамы</h1>
+      <p id="scratch-tip">Проведи пальцем или мышкой по серебристому полю.</p>
+      <div class="scratch">
+        <div class="certificate" id="certificate" aria-hidden="true">
+          <span>♥ &nbsp; С ЛЮБОВЬЮ</span>
+          <strong>Подарочный сертификат</strong>
+          <span>Демо-версия</span>
+        </div>
+        <canvas id="foil" width="780" height="340" aria-hidden="true"></canvas>
+      </div>
+      <button type="button" class="outline" id="prize-reveal">Открыть сертификат</button>
+      <p id="prize-status" role="status"></p>
+    </section>
+  </main>
+  <dialog id="avatar-dialog" aria-labelledby="avatar-title">
+    <form id="avatar-form">
+      <h2 id="avatar-title">Мой персонаж</h2>
+      <div class="avatar-preview" id="avatar-preview" aria-hidden="true"></div>
+      <div class="avatar-options">
+        <label>Причёска<select name="hair"><option value="bob">Каре</option><option value="waves">Волны</option><option value="bun">Пучок</option></select></label>
+        <label>Цвет волос<select name="hairColor"><option value="#4b2d25">Каштановый</option><option value="#a34d2b">Рыжий</option><option value="#c99551">Русый</option><option value="#817777">Серебристый</option><option value="#2b2528">Тёмный</option></select></label>
+        <label>Тон кожи<select name="skin"><option value="#f1bc91">Светлый</option><option value="#c7865e">Тёплый</option><option value="#945735">Тёмный</option></select></label>
+        <label>Одежда<select name="shirt"><option value="#ae5140">Терракотовая</option><option value="#56755c">Зелёная</option><option value="#735676">Сиреневая</option><option value="#476c83">Синяя</option></select></label>
+      </div>
+      <label class="glasses"><input type="checkbox" name="glasses"> Очки</label>
+      <div class="dialog-actions"><button class="outline" id="avatar-cancel" type="button">Отмена</button><button type="submit">Сохранить</button></div>
+    </form>
+  </dialog>
+</body>
+</html>

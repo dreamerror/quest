@@ -1,0 +1,491 @@
+<div id="birthday-quest" class="viz-carousel" aria-label="Варианты оформления квеста" data-previous-label="Предыдущий концепт" data-next-label="Следующий концепт">
+  <section data-variant="Кассета для мамы" aria-label="Кассета для мамы">
+    <div class="quest-stage tape">
+      <header><span>СТЕРЕО</span><span>ДЛЯ МАМЫ ♥</span></header>
+      <div class="quest-intro">
+        <div class="quest-copy">
+          <h2>Кассета<br>для мамы</h2>
+          <p>Сборник игр и воспоминаний ко дню рождения.</p>
+          <button type="button" data-view="game">▶ &nbsp; Воспроизвести</button>
+        </div>
+        <div class="cassette" aria-hidden="true">
+          <div class="tape-label"><span>A</span><strong>С днём рождения!</strong><div class="reels"><i></i><b></b><i></i></div></div>
+          <div class="tape-foot"><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="quest-game" hidden>
+        <h2>Угадай песню</h2>
+        <p>На каждом треке — мелодия из маминого плейлиста. Выбери, какая песня звучит.</p>
+        <div class="game-art waveform" aria-hidden="true">▂ ▃ ▆ ▄ ▇ ▂ ▅ ▃</div>
+      </div>
+      <div class="quest-prize" hidden>
+        <h2>Сюрприз на стороне Б</h2>
+        <p>Сотри фольгу на вкладыше кассеты.</p>
+        <div class="scratch-card">
+          <div class="certificate" aria-hidden="true">Подарочный<br>сертификат</div>
+          <canvas aria-hidden="true"></canvas>
+        </div>
+        <button type="button" class="reveal">Открыть сертификат</button>
+        <span class="quest-status" role="status"></span>
+      </div>
+      <nav aria-label="Экраны концепта">
+        <button type="button" data-view="intro" aria-pressed="true">Обложка</button>
+        <button type="button" data-view="game" aria-pressed="false">Мини-игра</button>
+        <button type="button" data-view="prize" aria-pressed="false">Финал</button>
+      </nav>
+    </div>
+  </section>
+  <section data-variant="Игровой автомат" aria-label="Игровой автомат" hidden>
+    <div class="quest-stage arcade">
+      <header><span>✦ ИГРОВОЙ ЗАЛ</span><span>1 ИГРОК</span></header>
+      <div class="quest-intro">
+        <div class="arcade-screen">
+          <h2>Мама,<br><em>твоя игра!</em></h2>
+          <div class="arcade-art" aria-hidden="true"><span>✦</span><i></i><span>✧</span></div>
+          <p>Пройди мини-игры и забери приз.</p>
+          <button type="button" data-view="game">Начать игру</button>
+        </div>
+      </div>
+      <div class="quest-game" hidden>
+        <h2>Поймай звёзды</h2>
+        <p>Передвигай корзинку и лови падающие звёзды.</p>
+        <div class="game-art stars" aria-hidden="true">✦　✧　✦<br><span>▂▂▂</span></div>
+      </div>
+      <div class="quest-prize" hidden>
+        <h2>Билет на приз</h2>
+        <p>Сотри покрытие на билете из автомата.</p>
+        <div class="scratch-card">
+          <div class="certificate" aria-hidden="true">Подарочный<br>сертификат</div>
+          <canvas aria-hidden="true"></canvas>
+        </div>
+        <button type="button" class="reveal">Открыть сертификат</button>
+        <span class="quest-status" role="status"></span>
+      </div>
+      <nav aria-label="Экраны концепта">
+        <button type="button" data-view="intro" aria-pressed="true">Заставка</button>
+        <button type="button" data-view="game" aria-pressed="false">Мини-игра</button>
+        <button type="button" data-view="prize" aria-pressed="false">Финал</button>
+      </nav>
+    </div>
+  </section>
+  <section data-variant="Семейный альбом" aria-label="Семейный альбом" hidden>
+    <div class="quest-stage album">
+      <header><span>СЕМЕЙНЫЙ АЛЬБОМ</span><span>С ЛЮБОВЬЮ ♡</span></header>
+      <div class="quest-intro">
+        <div class="photo-stack" aria-hidden="true"><div class="print"><div class="photo"><i></i><b></b></div><span>Наше лето</span></div></div>
+        <div class="quest-copy">
+          <h2>Мама,<br>это для тебя</h2>
+          <p>Несколько игр по страницам нашей семейной истории.</p>
+          <button type="button" data-view="game">Открыть альбом &nbsp; →</button>
+        </div>
+      </div>
+      <div class="quest-game" hidden>
+        <h2>Собери снимок</h2>
+        <p>Сложи фрагменты семейной фотографии и вспомни, где она была сделана.</p>
+        <div class="game-art puzzle" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <div class="quest-prize" hidden>
+        <h2>Конверт на последней странице</h2>
+        <p>Сотри серебряное поле на открытке.</p>
+        <div class="scratch-card">
+          <div class="certificate" aria-hidden="true">Подарочный<br>сертификат</div>
+          <canvas aria-hidden="true"></canvas>
+        </div>
+        <button type="button" class="reveal">Открыть сертификат</button>
+        <span class="quest-status" role="status"></span>
+      </div>
+      <nav aria-label="Экраны концепта">
+        <button type="button" data-view="intro" aria-pressed="true">Обложка</button>
+        <button type="button" data-view="game" aria-pressed="false">Мини-игра</button>
+        <button type="button" data-view="prize" aria-pressed="false">Финал</button>
+      </nav>
+    </div>
+  </section>
+</div>
+<style>
+  #birthday-quest .quest-stage {
+    min-height: 470px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    color: var(--ink);
+    background: var(--paper);
+    font: 16px/1.45 var(--body);
+    border-radius: 12px;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  #birthday-quest [hidden] { display: none !important; }
+  #birthday-quest .quest-stage header, #birthday-quest .quest-stage nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    padding: 12px clamp(15px, 4vw, 38px);
+    border-color: var(--line);
+    border-style: solid;
+    border-width: 0 0 1px;
+  }
+  #birthday-quest .quest-stage header {
+    min-height: 48px;
+    padding-right: clamp(84px, 12vw, 104px);
+    font: 700 12px/1.3 var(--body);
+    letter-spacing: .14em;
+  }
+  #birthday-quest .quest-stage nav {
+    justify-content: center;
+    border-width: 1px 0 0;
+    margin-top: auto;
+  }
+  #birthday-quest .quest-stage button {
+    min-height: 44px;
+    border: 1px solid var(--accent);
+    border-radius: var(--button-radius, 4px);
+    padding: 7px 14px;
+    color: var(--button-text);
+    background: var(--accent);
+    font: 700 14px/1.2 var(--body);
+  }
+  #birthday-quest .quest-stage nav button, #birthday-quest .reveal {
+    color: var(--ink);
+    background: transparent;
+    border-color: transparent;
+  }
+  #birthday-quest .quest-stage nav button[aria-pressed="true"] {
+    color: var(--ink);
+    background: var(--selection);
+    border-color: var(--line);
+  }
+  #birthday-quest .quest-intro {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.04fr) minmax(0, .96fr);
+    align-items: center;
+    gap: clamp(14px, 5vw, 50px);
+    padding: 28px clamp(16px, 5vw, 52px);
+  }
+  #birthday-quest h2 {
+    margin: 0;
+    color: var(--ink);
+    font: 800 clamp(33px, 6.7vw, 76px)/.99 var(--display);
+    letter-spacing: -.055em;
+  }
+  #birthday-quest p { margin: 14px 0 18px; }
+  #birthday-quest .quest-game, #birthday-quest .quest-prize {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 19px 15px;
+    text-align: center;
+  }
+  #birthday-quest :is(.quest-game, .quest-prize) h2 {
+    max-width: 21ch;
+    font-size: clamp(27px, 5vw, 50px);
+  }
+  #birthday-quest :is(.quest-game, .quest-prize) p { max-width: 43ch; }
+  #birthday-quest .game-art {
+    display: grid;
+    place-items: center;
+    width: min(270px, 100%);
+    min-height: 100px;
+  }
+  #birthday-quest .scratch-card {
+    width: min(340px, 100%);
+    height: 104px;
+    position: relative;
+    display: grid;
+    place-items: center;
+    background: var(--selection);
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  #birthday-quest .certificate { font: 800 24px/1.1 var(--display); }
+  #birthday-quest canvas { position: absolute; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+  #birthday-quest .reveal { text-decoration: underline; }
+  #birthday-quest .quest-status {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  #birthday-quest .tape {
+    --paper: #f2d9a9; --ink: #2f201a; --accent: #923a28; --button-text: #fff6dc;
+    --line: #a87957; --selection: #e8bc88;
+    --body: "Courier Prime", "Courier New", monospace; --display: "Archivo Black", "Arial Black", Arial, sans-serif;
+    background-image: repeating-linear-gradient(0deg, #633e2410 0 1px, transparent 1px 4px);
+  }
+  #birthday-quest .cassette {
+    position: relative;
+    width: 100%;
+    max-width: 370px;
+    aspect-ratio: 1.59;
+    justify-self: center;
+    transform: rotate(-7deg);
+    background: #2e2822;
+    border: 2px solid #181512;
+    border-radius: 8% / 12%;
+    box-shadow: 0 12px 0 #9c5939, 0 19px 26px #46281655, inset 0 0 0 4px #4a3c30;
+  }
+  #birthday-quest .tape-label {
+    position: absolute;
+    inset: 9% 8% 25%;
+    background: linear-gradient(#fff0c6 0 32%, #d57246 32% 43%, #a1432e 43% 56%, #683928 56% 68%, #fff0c6 68%);
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 2% 5%;
+    font-size: clamp(11px, 2.2vw, 17px);
+  }
+  #birthday-quest .reels {
+    position: absolute;
+    inset: 36% 12% 19%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    border-radius: 22px;
+    background: #221e1a;
+    border: 2px solid #4e392c;
+  }
+  #birthday-quest .reels i {
+    width: 19%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: repeating-conic-gradient(#f7deaa 0deg 30deg, #705344 30deg 60deg);
+    border: 2px solid #d8be8b;
+  }
+  #birthday-quest .reels b { width: 30%; height: 28%; background: #745a4a; border-radius: 4px; }
+  #birthday-quest .tape-foot {
+    position: absolute;
+    inset: 80% 20% 3%;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    background: #493d32;
+    clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+  }
+  #birthday-quest .tape-foot i { width: 5%; aspect-ratio: 1; border-radius: 50%; background: #181512; }
+  #birthday-quest .waveform { background: #2e2822; color: #ffd29b; border-radius: 7px; font-size: clamp(18px, 4vw, 31px); }
+
+  #birthday-quest .arcade {
+    --paper: #18112e; --ink: #fff0fa; --accent: #f8db68; --button-text: #211533;
+    --line: #795798; --selection: #463260;
+    --body: "IBM Plex Mono", "Courier New", monospace; --display: "Archivo Black", "Arial Black", Arial, sans-serif;
+    background-image: repeating-linear-gradient(0deg, #0000 0 3px, #0003 3px 4px);
+  }
+  #birthday-quest .arcade .quest-intro { display: grid; grid-template-columns: 1fr; text-align: center; padding-block: 14px; }
+  #birthday-quest .arcade-screen {
+    display: grid;
+    justify-items: center;
+    padding: 13px 10px;
+    border: 2px solid #8b62ac;
+    border-radius: 28px;
+    background: radial-gradient(ellipse at 50% 60%, #40224f, #1a1029 73%);
+    box-shadow: inset 0 0 22px #080511, 0 0 18px #ad66dd42;
+  }
+  #birthday-quest .arcade h2 { text-shadow: 3px 3px #9f337e; }
+  #birthday-quest .arcade em { color: #f8db68; font-style: normal; }
+  #birthday-quest .arcade p { margin-block: 8px 11px; }
+  #birthday-quest .arcade-art {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin: 8px 0 0;
+    color: #83e9d6;
+    font-size: 28px;
+  }
+  #birthday-quest .arcade-art i {
+    width: 43px; height: 40px;
+    background: #f485ba;
+    clip-path: polygon(0 15%, 15% 15%, 15% 0, 43% 0, 43% 15%, 57% 15%, 57% 0, 85% 0, 85% 15%, 100% 15%, 100% 54%, 85% 54%, 85% 69%, 70% 69%, 70% 85%, 57% 85%, 57% 100%, 43% 100%, 43% 85%, 30% 85%, 30% 69%, 15% 69%, 15% 54%, 0 54%);
+  }
+  #birthday-quest .stars { border: 1px solid #795798; color: #f8db68; font-size: 23px; }
+  #birthday-quest .stars span { color: #83e9d6; }
+  #birthday-quest .arcade .scratch-card { border-style: dashed; border-radius: 0; }
+
+  #birthday-quest .album {
+    --paper: #f3ebdf; --ink: #3a2b24; --accent: #6a4035; --button-text: #fff9f0;
+    --line: #b09680; --selection: #e9d6be; --button-radius: 18px;
+    --body: "Atkinson Hyperlegible Next", Arial, sans-serif; --display: "Cormorant Garamond", Georgia, serif;
+    background-image: linear-gradient(90deg, #a6774822, transparent 4%, transparent 96%, #a677481a);
+  }
+  #birthday-quest .album .quest-intro { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); }
+  #birthday-quest .album h2 { font-style: italic; font-weight: 600; letter-spacing: -.05em; }
+  #birthday-quest .photo-stack {
+    width: 86%;
+    max-width: 240px;
+    justify-self: center;
+    position: relative;
+    transform: rotate(-8deg);
+  }
+  #birthday-quest .photo-stack::before {
+    content: "";
+    position: absolute;
+    inset: 1% -7% -1% 4%;
+    background: #e8d9c2;
+    box-shadow: 0 3px 12px #3a2b2430;
+    transform: rotate(17deg);
+  }
+  #birthday-quest .print {
+    position: relative;
+    background: #fffae8;
+    padding: 6% 6% 4%;
+    box-shadow: 0 5px 13px #3a2b2440;
+    font: italic 17px Georgia, serif;
+    text-align: center;
+  }
+  #birthday-quest .print span { display: block; margin-top: 7%; }
+  #birthday-quest .photo {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1.16;
+    background: linear-gradient(170deg, #b78d6c, #f5c78d 57%, #a8815c 58%, #758064);
+  }
+  #birthday-quest .photo i {
+    position: absolute; width: 20%; aspect-ratio: 1; top: 23%; right: 21%; background: #f9d7a0; border-radius: 50%;
+  }
+  #birthday-quest .photo b {
+    position: absolute; inset: 35% 0 0; background: #5b6754;
+    clip-path: polygon(0 57%, 19% 33%, 32% 54%, 48% 29%, 73% 69%, 94% 28%, 100% 41%, 100% 100%, 0 100%);
+  }
+  #birthday-quest .puzzle { grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  #birthday-quest .puzzle i { width: 100%; height: 48px; background: #bd9677; }
+  #birthday-quest .puzzle i:nth-child(2n) { background: #e4bb91; }
+  #birthday-quest .puzzle i:nth-child(n+4) { background: #798467; }
+  #birthday-quest .puzzle i:last-child { opacity: .35; }
+  #birthday-quest .album .scratch-card { outline: 1px solid var(--line); outline-offset: 4px; border-radius: 2px; }
+
+  @media (max-width: 550px) {
+    #birthday-quest .quest-stage { min-height: 545px; }
+    #birthday-quest .quest-intro, #birthday-quest .album .quest-intro {
+      grid-template-columns: 1fr;
+      align-content: center;
+      justify-items: center;
+      text-align: center;
+      gap: 14px;
+      padding-block: 16px;
+    }
+    #birthday-quest .cassette { width: min(70%, 200px); margin: 5px 0 12px; }
+    #birthday-quest .photo-stack { width: 128px; }
+    #birthday-quest .quest-stage nav { padding-inline: 6px; gap: 3px; }
+    #birthday-quest .quest-stage nav button { padding-inline: 9px; }
+  }
+</style>
+<script>
+  {
+    const root = document.getElementById("birthday-quest");
+    for (const stage of root.querySelectorAll(".quest-stage")) {
+      const screens = {
+        intro: stage.querySelector(".quest-intro"),
+        game: stage.querySelector(".quest-game"),
+        prize: stage.querySelector(".quest-prize")
+      };
+      const canvas = stage.querySelector("canvas");
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      const revealButton = stage.querySelector(".reveal");
+      const certificate = stage.querySelector(".certificate");
+      const status = stage.querySelector(".quest-status");
+      let previousPoint = null;
+      let activePointer = null;
+
+      canvas.width = 680;
+      canvas.height = 208;
+      const foil = context.createLinearGradient(0, 0, 680, 208);
+      foil.addColorStop(0, "#9e9ba2");
+      foil.addColorStop(.48, "#ebe8e3");
+      foil.addColorStop(1, "#9c9ba5");
+      context.fillStyle = foil;
+      context.fillRect(0, 0, 680, 208);
+      context.strokeStyle = "#fff3";
+      context.lineWidth = 1;
+      for (let row = 0; row < 208; row += 5) {
+        context.beginPath();
+        context.moveTo(0, row);
+        context.lineTo(680, row + 11);
+        context.stroke();
+      }
+      context.fillStyle = "#3a3441";
+      context.font = "bold 29px Arial, sans-serif";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      context.fillText("Сотри здесь", 340, 104);
+      context.globalCompositeOperation = "destination-out";
+      context.strokeStyle = "#000";
+      context.lineCap = "round";
+      context.lineWidth = 59;
+
+      function reveal() {
+        canvas.hidden = true;
+        certificate.removeAttribute("aria-hidden");
+        revealButton.textContent = "Сертификат открыт";
+        revealButton.setAttribute("aria-disabled", "true");
+        status.textContent = "Подарочный сертификат открыт";
+      }
+
+      function scratch(event) {
+        const bounds = canvas.getBoundingClientRect();
+        const point = {
+          x: (event.clientX - bounds.left) * canvas.width / bounds.width,
+          y: (event.clientY - bounds.top) * canvas.height / bounds.height
+        };
+        const start = previousPoint ?? { x: point.x + 0.1, y: point.y };
+        context.beginPath();
+        context.moveTo(start.x, start.y);
+        context.lineTo(point.x, point.y);
+        context.stroke();
+        previousPoint = point;
+      }
+
+      canvas.addEventListener("pointerdown", event => {
+        if (activePointer !== null || event.button !== 0) return;
+        activePointer = event.pointerId;
+        canvas.setPointerCapture(activePointer);
+        scratch(event);
+      });
+      canvas.addEventListener("pointermove", event => {
+        if (event.pointerId === activePointer) scratch(event);
+      });
+      canvas.addEventListener("lostpointercapture", () => {
+        activePointer = null;
+        previousPoint = null;
+        const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+        let erased = 0;
+        let sampled = 0;
+        for (let y = 4; y < canvas.height; y += 8) {
+          for (let x = 4; x < canvas.width; x += 8) {
+            sampled++;
+            if (pixels[(y * canvas.width + x) * 4 + 3] < 25) erased++;
+          }
+        }
+        if (erased / sampled >= 0.55) reveal();
+      });
+      revealButton.addEventListener("click", () => {
+        if (!canvas.hidden) reveal();
+      });
+
+      for (const control of stage.querySelectorAll("[data-view]")) {
+        control.classList.add("cursor-interaction");
+        control.addEventListener("click", () => {
+          const view = control.dataset.view;
+          for (const [name, screen] of Object.entries(screens)) screen.hidden = name !== view;
+          for (const item of stage.querySelectorAll("nav [data-view]")) {
+            item.setAttribute("aria-pressed", String(item.dataset.view === view));
+            if (item.dataset.view === view && control.closest("nav") === null) item.focus();
+          }
+        });
+      }
+      revealButton.classList.add("cursor-interaction");
+      if (globalThis.Tweak) {
+        const style = { color: getComputedStyle(stage).getPropertyValue("--accent").trim() };
+        const tweak = new Tweak({ container: stage, onChange: () => stage.style.setProperty("--accent", style.color) });
+        tweak.addColorPicker(style, "color", { label: "Цвет кнопки", reference: "--accent" });
+      }
+    }
+  }
+</script>
