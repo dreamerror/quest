@@ -1,5 +1,251 @@
 "use strict";
 
+function mountMarbles(container, { complete, isPaused }) {
+  container.innerHTML = `
+    <p class="instructions">Стреляй по бусинам и собирай три одного цвета. Очисти дорожку до того, как цепочка доберётся до катушки.</p>
+    <div class="hud"><span data-count></span><span data-ammo></span></div>
+    <canvas class="marble-board" width="640" height="440" tabindex="0" aria-label="Бусы для мамы. Мышь или касание — выстрел. Стрелки — прицел, пробел — выстрел, X — смена бусины."></canvas>
+    <div class="game-controls marble-controls"><button type="button" data-start>Начать</button><button type="button" class="outline" data-swap>⇄ Сменить бусину</button></div>
+    <p class="pack-status" role="status">Прицелься мышью или пальцем. Стрелки и пробел тоже работают.</p>`;
+  const canvas = container.querySelector("canvas");
+  const context = canvas.getContext("2d");
+  const start = container.querySelector("[data-start]");
+  const swap = container.querySelector("[data-swap]");
+  const status = container.querySelector("[role=status]");
+  const count = container.querySelector("[data-count]");
+  const ammo = container.querySelector("[data-ammo]");
+  const colors = ["#a44435", "#386e66", "#735786"];
+  const symbols = ["♥", "✦", "●"];
+  const names = ["Красная ♥", "Зелёная ✦", "Сиреневая ●"];
+  const gap = 29;
+  const radius = 14;
+  const launcher = { x: 320, y: 360 };
+  const path = [{ x: 60, y: 240, distance: 0 }];
+  for (let step = 1; step <= 180; step++) {
+    const angle = Math.PI - step * Math.PI / 180;
+    const point = { x: 320 + 260 * Math.cos(angle), y: 240 - 175 * Math.sin(angle) };
+    const previous = path[path.length - 1];
+    point.distance = previous.distance + Math.hypot(point.x - previous.x, point.y - previous.y);
+    path.push(point);
+  }
+  const length = path[path.length - 1].distance;
+  let balls;
+  let head;
+  let current;
+  let next;
+  let angle = -Math.PI / 2;
+  let shot = null;
+  let running = false;
+  let frame;
+  let lastTime = null;
+  let disposed = false;
+
+  function pointAt(distance) {
+    const clamped = Math.max(0, Math.min(length, distance));
+    const index = path.findIndex(point => point.distance >= clamped);
+    if (index === 0) return path[0];
+    const a = path[index - 1];
+    const b = path[index];
+    const ratio = (clamped - a.distance) / (b.distance - a.distance);
+    return { x: a.x + (b.x - a.x) * ratio, y: a.y + (b.y - a.y) * ratio };
+  }
+
+  function pickColor() {
+    const available = [...new Set(balls)];
+    return available[Math.floor(Math.random() * available.length)];
+  }
+
+  function hud() {
+    count.textContent = `На дорожке ${balls.length}`;
+    ammo.textContent = `Выстрел ${names[current]} · Далее ${names[next]}`;
+  }
+
+  function bead(x, y, color, size = radius) {
+    context.beginPath();
+    context.arc(x, y, size, 0, Math.PI * 2);
+    context.fillStyle = colors[color];
+    context.fill();
+    context.strokeStyle = "#fff1ce";
+    context.lineWidth = 2;
+    context.stroke();
+    context.fillStyle = "#fff5dc";
+    context.font = `bold ${size}px Arial`;
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.fillText(symbols[color], x, y + 1);
+  }
+
+  function draw() {
+    context.clearRect(0, 0, 640, 440);
+    context.lineCap = "round";
+    context.beginPath();
+    context.moveTo(path[0].x, path[0].y);
+    for (const point of path) context.lineTo(point.x, point.y);
+    context.lineWidth = 38;
+    context.strokeStyle = "#bc936b";
+    context.stroke();
+    context.lineWidth = 30;
+    context.strokeStyle = "#e2bf91";
+    context.stroke();
+    context.beginPath();
+    context.arc(580, 240, 24, 0, Math.PI * 2);
+    context.fillStyle = "#584033";
+    context.fill();
+    context.beginPath();
+    context.arc(580, 240, 11, 0, Math.PI * 2);
+    context.fillStyle = "#e6bc87";
+    context.fill();
+    for (let index = balls.length - 1; index >= 0; index--) {
+      const point = pointAt(head - index * gap);
+      bead(point.x, point.y, balls[index]);
+    }
+    context.save();
+    context.setLineDash([4, 8]);
+    context.strokeStyle = "#654d3c80";
+    context.lineWidth = 2;
+    context.beginPath();
+    context.moveTo(launcher.x, launcher.y);
+    context.lineTo(launcher.x + Math.cos(angle) * 110, launcher.y + Math.sin(angle) * 110);
+    context.stroke();
+    context.restore();
+    context.beginPath();
+    context.arc(launcher.x, launcher.y, 31, 0, Math.PI * 2);
+    context.fillStyle = "#936847";
+    context.fill();
+    bead(launcher.x, launcher.y, current, 21);
+    bead(launcher.x + 54, launcher.y + 12, next, 12);
+    if (shot) bead(shot.x, shot.y, shot.color, 12);
+  }
+
+  function reset() {
+    balls = Array.from({ length: 18 }, (_, index) => Math.floor(index / 2) % 3);
+    head = 510;
+    current = 2;
+    next = 1;
+    shot = null;
+    hud();
+    draw();
+  }
+
+  function finish(won) {
+    running = false;
+    shot = null;
+    swap.disabled = true;
+    start.disabled = false;
+    start.hidden = won;
+    start.textContent = "Попробовать снова";
+    status.textContent = won ? "Все бусины собраны!" : "Цепочка добралась до катушки. Попробуем ещё раз?";
+    draw();
+    if (won) complete();
+    else start.focus({ preventScroll: true });
+  }
+
+  function resolve(index) {
+    let left = index;
+    let right = index;
+    while (left > 0 && balls[left - 1] === balls[index]) left--;
+    while (right + 1 < balls.length && balls[right + 1] === balls[index]) right++;
+    if (right - left + 1 < 3) return;
+    const removed = right - left + 1;
+    balls.splice(left, removed);
+    head -= removed * gap;
+    if (left > 0 && left < balls.length && balls[left - 1] === balls[left]) resolve(left);
+  }
+
+  function tick(time) {
+    if (disposed || !running) return;
+    const dt = lastTime === null ? 0 : Math.min((time - lastTime) / 1000, 0.04);
+    lastTime = time;
+    if (!isPaused()) {
+      head += dt * 3.5;
+      if (shot) {
+        shot.x += Math.cos(shot.angle) * 650 * dt;
+        shot.y += Math.sin(shot.angle) * 650 * dt;
+        const hit = balls.findIndex((_, index) => {
+          const point = pointAt(head - index * gap);
+          return Math.hypot(shot.x - point.x, shot.y - point.y) <= 26;
+        });
+        if (hit >= 0) {
+          const front = pointAt(head - hit * gap + gap / 2);
+          const back = pointAt(head - hit * gap - gap / 2);
+          const index = hit + Number(Math.hypot(shot.x - back.x, shot.y - back.y) < Math.hypot(shot.x - front.x, shot.y - front.y));
+          balls.splice(index, 0, shot.color);
+          head += gap;
+          shot = null;
+          resolve(index);
+          if (balls.length === 0) {
+            hud();
+            finish(true);
+            return;
+          }
+          if (!balls.includes(current)) current = pickColor();
+          if (!balls.includes(next)) next = pickColor();
+          hud();
+        } else if (shot.x < -20 || shot.x > 660 || shot.y < -20 || shot.y > 460) shot = null;
+      }
+      if (head >= length - radius) {
+        finish(false);
+        return;
+      }
+      draw();
+    }
+    frame = requestAnimationFrame(tick);
+  }
+
+  function fire() {
+    if (!running || isPaused() || shot) return;
+    shot = { ...launcher, angle, color: current };
+    current = next;
+    next = pickColor();
+    hud();
+  }
+
+  function aim(event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = (event.clientX - rect.left) * 640 / rect.width;
+    const y = (event.clientY - rect.top) * 440 / rect.height;
+    angle = Math.max(-Math.PI + 0.1, Math.min(-0.1, Math.atan2(Math.min(y - launcher.y, -10), x - launcher.x)));
+    if (!running) draw();
+  }
+
+  canvas.addEventListener("pointermove", aim);
+  canvas.addEventListener("pointerdown", event => {
+    if (event.button !== 0) return;
+    aim(event);
+    canvas.focus({ preventScroll: true });
+    fire();
+  });
+  function swapColor() {
+    if (!running || isPaused()) return;
+    [current, next] = [next, current];
+    hud();
+    draw();
+  }
+  swap.addEventListener("click", swapColor);
+  canvas.addEventListener("keydown", event => {
+    if (["ArrowLeft", "ArrowRight", " "].includes(event.key)) event.preventDefault();
+    if (event.key === "ArrowLeft") angle = Math.max(-Math.PI + 0.1, angle - 0.07);
+    if (event.key === "ArrowRight") angle = Math.min(-0.1, angle + 0.07);
+    if (event.key === " " && !event.repeat) fire();
+    if (event.code === "KeyX") swapColor();
+    if (!running) draw();
+  });
+  start.addEventListener("click", () => {
+    reset();
+    running = true;
+    lastTime = null;
+    start.disabled = true;
+    swap.disabled = false;
+    status.textContent = "Три бусины одного цвета исчезают. Соседние группы могут запустить цепную реакцию.";
+    canvas.focus({ preventScroll: true });
+    canvas.scrollIntoView({ block: "nearest" });
+    frame = requestAnimationFrame(tick);
+  });
+  swap.disabled = true;
+  reset();
+  return { dispose: () => { disposed = true; cancelAnimationFrame(frame); } };
+}
+
 function mountCatcher(container, { avatar, complete, isPaused }) {
   container.innerHTML = `
     <p class="instructions">Собери 12 приятностей. За каждую пойманную заботу теряется жизнь.</p>
