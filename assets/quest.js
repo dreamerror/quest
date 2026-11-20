@@ -3,7 +3,8 @@
 const tracks = [
   { id: "catcher", title: "Ловитель приятностей", caption: "Лови подарки и пропускай заботы", mount: mountCatcher },
   { id: "packing", title: "Собери корзину мечты", caption: "Уложи подарки в коробку", mount: mountPacking },
-  { id: "marbles", title: "Бусы для мамы", caption: "Собери три бусины одного цвета", mount: mountMarbles }
+  { id: "marbles", title: "Бусы для мамы", caption: "Собери три бусины одного цвета", mount: mountMarbles },
+  { id: "match3", title: "Маленькие радости", caption: "Собери приятности по три в ряд", mount: mountMatchThree }
 ];
 const $ = id => document.getElementById(id);
 const storageKey = "cassette-for-mom-v1";

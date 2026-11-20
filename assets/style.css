@@ -183,6 +183,10 @@ dialog::backdrop { background: #211610b3; }
 .dialog-actions { display: flex; justify-content: end; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 .marble-board { display: block; width: 100%; background: #f6deb6; border: 2px solid #936847; border-radius: 10px; touch-action: manipulation; }
 .marble-controls { margin-top: 10px; }
+.match-board { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 5px; width: min(100%, 420px); padding: 8px; background: #bf9169; border: 2px solid #936847; border-radius: 8px; }
+.match-board button { min-width: 0; min-height: 0; padding: 0; aspect-ratio: 1; font-size: clamp(20px, 5vw, 31px); background: #fff0cd; border-color: #a77a55; color: var(--ink); }
+.match-board button[aria-pressed="true"] { background: #ebbf8f; outline: 3px solid var(--accent); outline-offset: -3px; }
+.match-board button[data-matched="true"] { opacity: .3; transform: scale(.85); }
 @media (max-width: 635px) {
   .cover { grid-template-columns: 1fr; text-align: center; padding-bottom: 36px; }
   .cover-message { margin-inline: auto; }

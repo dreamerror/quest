@@ -1,5 +1,208 @@
 "use strict";
 
+function mountMatchThree(container, { complete }) {
+  container.innerHTML = `
+    <p class="instructions">Меняй местами соседние приятности, чтобы собрать три или больше в ряд. Собери 36 приятностей за 18 ходов. Неудачная перестановка не тратит ход.</p>
+    <div class="hud"><span data-score></span><span data-moves></span></div>
+    <div class="match-board" role="group" aria-label="Поле три в ряд"></div>
+    <p class="pack-status" role="status">Выбери приятность, а затем соседнюю клетку.</p>
+    <div class="game-controls"><button type="button" class="outline" data-hint>Подсказать ход</button><button type="button" class="outline" data-restart>Заново</button></div>`;
+  const grid = container.querySelector(".match-board");
+  const scoreLabel = container.querySelector("[data-score]");
+  const movesLabel = container.querySelector("[data-moves]");
+  const status = container.querySelector("[role=status]");
+  const hint = container.querySelector("[data-hint]");
+  const restart = container.querySelector("[data-restart]");
+  const items = [
+    { icon: "💐", name: "Букет" }, { icon: "☕", name: "Кофе" },
+    { icon: "💗", name: "Сердечко" }, { icon: "🎁", name: "Подарок" },
+    { icon: "🍰", name: "Торт" }
+  ];
+  const size = 6;
+  const goal = 36;
+  let board = [];
+  let score = 0;
+  let moves = 18;
+  let selected = null;
+  let busy = false;
+  let finished = false;
+  let timer;
+  let cascadeCount = 0;
+  const buttons = [];
+
+  function matches() {
+    const found = new Set();
+    for (let row = 0; row < size; row++) {
+      for (let column = 0; column < size; column++) {
+        const index = row * size + column;
+        if (column < size - 2 && board[index] === board[index + 1] && board[index] === board[index + 2]) {
+          found.add(index).add(index + 1).add(index + 2);
+        }
+        if (row < size - 2 && board[index] === board[index + size] && board[index] === board[index + size * 2]) {
+          found.add(index).add(index + size).add(index + size * 2);
+        }
+      }
+    }
+    return found;
+  }
+
+  function exchange(a, b) {
+    [board[a], board[b]] = [board[b], board[a]];
+  }
+
+  function possibleMove() {
+    for (let index = 0; index < board.length; index++) {
+      const neighbors = [];
+      if (index % size < size - 1) neighbors.push(index + 1);
+      if (index < size * (size - 1)) neighbors.push(index + size);
+      for (const neighbor of neighbors) {
+        exchange(index, neighbor);
+        const valid = matches().size > 0;
+        exchange(index, neighbor);
+        if (valid) return [index, neighbor];
+      }
+    }
+    return null;
+  }
+
+  function newBoard() {
+    do {
+      board = [];
+      for (let index = 0; index < size * size; index++) {
+        const choices = items.map((_, value) => value).filter(value =>
+          !(index % size >= 2 && board[index - 1] === value && board[index - 2] === value) &&
+          !(index >= size * 2 && board[index - size] === value && board[index - size * 2] === value));
+        board.push(choices[Math.floor(Math.random() * choices.length)]);
+      }
+    } while (!possibleMove());
+  }
+
+  function render(matched = new Set()) {
+    scoreLabel.textContent = `Собрано ${score} / ${goal}`;
+    movesLabel.textContent = `Ходов ${moves}`;
+    for (const [index, button] of buttons.entries()) {
+      const item = items[board[index]];
+      button.textContent = item.icon;
+      button.setAttribute("aria-label", `Ряд ${Math.floor(index / size) + 1}, клетка ${index % size + 1}, ${item.name}`);
+      button.setAttribute("aria-pressed", String(selected === index));
+      button.dataset.matched = String(matched.has(index));
+      button.disabled = busy || finished;
+    }
+    hint.disabled = busy || finished;
+    restart.disabled = busy;
+  }
+
+  function settle() {
+    const matched = matches();
+    if (matched.size) {
+      score += matched.size;
+      cascadeCount++;
+      render(matched);
+      timer = setTimeout(() => {
+        for (let column = 0; column < size; column++) {
+          const remaining = [];
+          for (let row = size - 1; row >= 0; row--) {
+            const index = row * size + column;
+            if (!matched.has(index)) remaining.push(board[index]);
+          }
+          for (let row = size - 1; row >= 0; row--) {
+            const offset = size - 1 - row;
+            board[row * size + column] = offset < remaining.length
+              ? remaining[offset] : Math.floor(Math.random() * items.length);
+          }
+        }
+        if (cascadeCount >= 20) newBoard();
+        settle();
+      }, 240);
+      return;
+    }
+    busy = false;
+    finished = score >= goal || moves === 0;
+    if (score >= goal) {
+      status.textContent = "Все приятности собраны!";
+      restart.hidden = true;
+      render();
+      complete();
+      return;
+    }
+    if (moves === 0) status.textContent = "Ходы закончились. Попробуй ещё раз!";
+    else if (!possibleMove()) {
+      newBoard();
+      status.textContent = "Доступных комбинаций больше нет — поле перемешалось. Количество ходов сохранено.";
+    } else status.textContent = "Выбери следующую пару приятностей.";
+    render();
+    if (finished) restart.focus();
+    else if (!grid.contains(document.activeElement)) buttons[0].focus({ preventScroll: true });
+  }
+
+  function choose(index) {
+    if (busy || finished) return;
+    if (selected === null) selected = index;
+    else if (selected === index) selected = null;
+    else {
+      const distance = Math.abs(Math.floor(selected / size) - Math.floor(index / size)) + Math.abs(selected % size - index % size);
+      if (distance !== 1) selected = index;
+      else {
+        exchange(selected, index);
+        if (!matches().size) {
+          exchange(selected, index);
+          status.textContent = "Ряд не сложился. Выбери другую пару.";
+          selected = null;
+        } else {
+          selected = null;
+          moves--;
+          busy = true;
+          cascadeCount = 0;
+          status.textContent = "Собираем приятности…";
+          settle();
+          return;
+        }
+      }
+    }
+    render();
+  }
+
+  for (let index = 0; index < size * size; index++) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.addEventListener("click", () => choose(index));
+    button.addEventListener("keydown", event => {
+      const offsets = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -size, ArrowDown: size };
+      if (!(event.key in offsets)) return;
+      event.preventDefault();
+      const next = index + offsets[event.key];
+      if (next >= 0 && next < buttons.length && (Math.abs(offsets[event.key]) === size || Math.floor(next / size) === Math.floor(index / size))) {
+        buttons[next].focus();
+      }
+    });
+    buttons.push(button);
+    grid.append(button);
+  }
+  hint.addEventListener("click", () => {
+    const [first, second] = possibleMove();
+    selected = first;
+    render();
+    const row = Math.floor(second / size) + 1;
+    const column = second % size + 1;
+    status.textContent = `Выбранную приятность поменяй с клеткой в ряду ${row}, столбце ${column}.`;
+    buttons[second].focus();
+  });
+  function reset() {
+    selected = null;
+    busy = false;
+    finished = false;
+    score = 0;
+    moves = 18;
+    restart.hidden = false;
+    newBoard();
+    status.textContent = "Выбери приятность, а затем соседнюю клетку.";
+    render();
+  }
+  restart.addEventListener("click", reset);
+  reset();
+  return { dispose: () => clearTimeout(timer) };
+}
+
 function mountMarbles(container, { complete, isPaused }) {
   container.innerHTML = `
     <p class="instructions">Стреляй по бусинам и собирай три одного цвета. Очисти дорожку до того, как цепочка доберётся до катушки.</p>
