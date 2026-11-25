@@ -247,6 +247,7 @@ function revealPrize() {
   $("certificate").removeAttribute("aria-hidden");
   $("prize-reveal").hidden = true;
   $("prize-status").textContent = "Сертификат открыт. С днём рождения, мама!";
+  window.loadQuestCertificate();
   if (buttonHadFocus) $("prize-title").focus();
 }
 

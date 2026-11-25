@@ -11,6 +11,9 @@
   --display: "Arial Black", Arial, sans-serif;
 }
 * { box-sizing: border-box; }
+.access-screen { margin: 40px auto; width: min(calc(100% - 32px), 700px); }
+.access-screen p { margin-block: 20px; }
+#pdf-actions a { color: var(--accent); font-weight: 700; min-height: 44px; display: inline-flex; align-items: center; }
 [hidden] { display: none !important; }
 body {
   margin: 0;

@@ -4,17 +4,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#29231e">
+  <meta name="referrer" content="no-referrer">
   <title>Кассета для мамы</title>
   <link rel="stylesheet" href="./assets/style.css">
   <script defer src="./assets/games.js"></script>
+  <script defer src="./assets/config.js"></script>
+  <script defer src="./assets/access.js"></script>
   <script defer src="./assets/quest.js"></script>
 </head>
 <body>
-  <header class="masthead">
+  <section class="sleeve access-screen" id="access-screen" aria-labelledby="access-title">
+    <h1 id="access-title">Кассета для мамы</h1>
+    <p id="access-status" role="status">Проверяем приглашение…</p>
+    <button type="button" id="access-retry" hidden>Попробовать ещё раз</button>
+  </section>
+  <header class="masthead" hidden>
     <a href="#" id="home-link">♥ &nbsp; КАССЕТА ДЛЯ МАМЫ</a>
     <button class="outline" type="button" id="avatar-open">Мой персонаж</button>
   </header>
-  <main>
+  <main hidden>
     <section id="home" aria-labelledby="home-title">
       <div class="cover">
         <div class="cover-copy">
@@ -60,12 +68,20 @@
         <div class="certificate" id="certificate" aria-hidden="true">
           <span>♥ &nbsp; С ЛЮБОВЬЮ</span>
           <strong>Подарочный сертификат</strong>
-          <span>Демо-версия</span>
+          <span>Твой подарок готов</span>
         </div>
         <canvas id="foil" width="780" height="340" aria-hidden="true"></canvas>
       </div>
       <button type="button" class="outline" id="prize-reveal">Открыть сертификат</button>
       <p id="prize-status" role="status"></p>
+      <div id="pdf-actions" hidden>
+        <p id="pdf-status" role="status"></p>
+        <div class="game-controls">
+          <a id="pdf-open" target="_blank" rel="noopener" hidden>Открыть PDF</a>
+          <a id="pdf-download" download="certificate-for-mom.pdf" hidden>Скачать сертификат</a>
+          <button type="button" class="outline" id="pdf-retry" hidden>Повторить загрузку</button>
+        </div>
+      </div>
     </section>
   </main>
   <dialog id="avatar-dialog" aria-labelledby="avatar-title">

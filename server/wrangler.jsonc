@@ -1,0 +1,15 @@
+{
+  "name": "cassette-certificate",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-11-25",
+  "vars": {
+    "SITE_ORIGIN": "https://dreamerror.github.io",
+    "CERTIFICATE_KEY": "certificate.pdf"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "CERTIFICATES",
+      "id": "600c3d2696f34fb381159fee84064050"
+    }
+  ]
+}
